@@ -3,7 +3,6 @@ package com.example.seokchankwon.verticalsectionrecyclerview;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -28,8 +27,6 @@ public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter
     private ArrayList<Integer> mSectionHeaderPositions;
 
     private LayoutInflater mLayoutInflater;
-
-    private OnSectionHeaderClickListener<T> mOnSectionHeaderClickListener;
 
 
     public SectionRecyclerViewAdapter(Context context) {
@@ -146,21 +143,21 @@ public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter
         return mSectionIndicator.get(adapterPosition);
     }
 
-    public int getSectionHeaderPosition(int section) {
-        return mSectionHeaderPositions.get(section);
+    public int getSectionHeaderPosition(int sectionPosition) {
+        return mSectionHeaderPositions.get(sectionPosition);
     }
 
     public int getSectionItemPosition(int adapterPosition) {
         int sectionPosition = getSectionPosition(adapterPosition);
-        int minPosition = getSectionHeaderPosition(sectionPosition);
+        int targetPosition = getSectionHeaderPosition(sectionPosition);
 
         int sectionItemPosition = 0;
 
-        while (minPosition != adapterPosition) {
-            if (minPosition > mTotalItemCount) {
+        while (targetPosition != adapterPosition) {
+            if (targetPosition > mTotalItemCount) {
                 return NO_ITEM_COUNT;
             }
-            minPosition++;
+            targetPosition++;
             sectionItemPosition++;
         }
 
@@ -192,10 +189,6 @@ public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter
         }
     }
 
-    public void setOnSectionHeaderClickListener(OnSectionHeaderClickListener<T> listener) {
-        mOnSectionHeaderClickListener = listener;
-    }
-
     abstract public int getSectionHeaderCount();
 
     abstract public int getSectionItemCount(int section);
@@ -208,32 +201,4 @@ public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter
 
     abstract void onBindSectionItemViewHolder(RecyclerView.ViewHolder holder, int position);
 
-    public interface OnSectionHeaderClickListener<T> {
-        void onHeaderClick(int adapterPosition, int sectionPosition, T SectionHeader);
-    }
-
-    public class SectionHeaderHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public SectionHeaderHolder(View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mOnSectionHeaderClickListener == null) {
-                return;
-            }
-
-            int adapterPosition = getAdapterPosition();
-            if (adapterPosition == RecyclerView.NO_POSITION) {
-                return;
-            }
-
-            int sectionPosition = getSectionPosition(adapterPosition);
-            T section = mSections.get(sectionPosition);
-
-            mOnSectionHeaderClickListener.onHeaderClick(adapterPosition, sectionPosition, section);
-        }
-    }
 }

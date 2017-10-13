@@ -53,22 +53,22 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.setItems(makeItems());
-        mAdapter.setOnSectionHeaderClickListener(new SectionRecyclerViewAdapter.OnSectionHeaderClickListener<Section>() {
+        mAdapter.setOnSectionHeaderClickListener(new MainAdapter.OnSectionHeaderClickListener() {
             @Override
-            public void onHeaderClick(int adapterPosition, int sectionPosition, Section SectionHeader) {
+            public void onHeaderClick(int sectionPosition, int adapterPosition, Section item) {
                 Toast.makeText(
                         MainActivity.this,
                         "adapterPosition = " + adapterPosition + "\n"
                                 + "sectionPosition = " + sectionPosition + "\n"
-                                + "title = " + SectionHeader.title + "\n"
-                                + "size = " + SectionHeader.items.size() + "\n",
+                                + "title = " + item.title + "\n"
+                                + "size = " + item.items.size() + "\n",
                         Toast.LENGTH_SHORT).show();
             }
         });
 
         mAdapter.setOnSectionItemClickListener(new MainAdapter.OnSectionItemClickListener() {
             @Override
-            public void onItemClick(int adapterPosition, int sectionPosition, int sectionItemPosition, Item item) {
+            public void onItemClick(int sectionPosition, int sectionItemPosition, int adapterPosition, Item item) {
                 Toast.makeText(
                         MainActivity.this,
                         "adapterPosition = " + adapterPosition + "\n"

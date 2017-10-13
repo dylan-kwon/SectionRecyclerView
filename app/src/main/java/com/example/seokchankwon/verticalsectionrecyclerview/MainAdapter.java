@@ -17,6 +17,7 @@ import com.example.seokchankwon.verticalsectionrecyclerview.model.Section;
 
 public class MainAdapter extends SectionRecyclerViewAdapter<Section> {
 
+    private OnSectionHeaderClickListener mOnSectionHeaderClickListener;
     private OnSectionItemClickListener mOnSectionItemClickListener;
 
     public MainAdapter(Context context) {
@@ -90,25 +91,51 @@ public class MainAdapter extends SectionRecyclerViewAdapter<Section> {
         return getItems().get(section).items.size();
     }
 
+    public void setOnSectionHeaderClickListener(OnSectionHeaderClickListener listener) {
+        mOnSectionHeaderClickListener = listener;
+    }
+
     public void setOnSectionItemClickListener(OnSectionItemClickListener listener) {
         mOnSectionItemClickListener = listener;
     }
 
-    public interface OnSectionItemClickListener {
-        void onItemClick(int adapterPosition, int sectionPosition, int sectionItemPosition, Item item);
+    public interface OnSectionHeaderClickListener {
+        void onHeaderClick(int sectionPosition, int adapterPosition, Section item);
     }
 
-    public class SectionHeaderHolder extends SectionRecyclerViewAdapter.SectionHeaderHolder {
+    public interface OnSectionItemClickListener {
+        void onItemClick(int sectionPosition, int sectionItemPosition, int adapterPosition, Item item);
+    }
+
+    public class SectionHeaderHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvSectionTitle;
 
         public SectionHeaderHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             tvSectionTitle = itemView.findViewById(R.id.tv_listview_main_section_title);
         }
 
         public TextView getTvSectionTitle() {
             return tvSectionTitle;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mOnSectionHeaderClickListener == null) {
+                return;
+            }
+
+            int adapterPosition = getAdapterPosition();
+            if (adapterPosition == RecyclerView.NO_POSITION) {
+                return;
+            }
+
+            int sectionPosition = getSectionPosition(adapterPosition);
+            Section section = getItems().get(sectionPosition);
+
+            mOnSectionHeaderClickListener.onHeaderClick(sectionPosition, adapterPosition, section);
         }
     }
 
@@ -120,6 +147,7 @@ public class MainAdapter extends SectionRecyclerViewAdapter<Section> {
         public SectionItemHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+
             tvItemTitle = itemView.findViewById(R.id.tv_listview_main_item_name);
             tvItemDesc = itemView.findViewById(R.id.tv_listview_main_item_desc);
         }
@@ -137,9 +165,10 @@ public class MainAdapter extends SectionRecyclerViewAdapter<Section> {
 
             int sectionPosition = getSectionPosition(adapterPosition);
             int sectionItemPosition = getSectionItemPosition(adapterPosition);
+
             Item section = getItem(sectionPosition).items.get(sectionItemPosition);
 
-            mOnSectionItemClickListener.onItemClick(adapterPosition, sectionPosition, sectionItemPosition, section);
+            mOnSectionItemClickListener.onItemClick(sectionPosition, sectionItemPosition, adapterPosition, section);
         }
 
         public TextView getTvItemName() {
