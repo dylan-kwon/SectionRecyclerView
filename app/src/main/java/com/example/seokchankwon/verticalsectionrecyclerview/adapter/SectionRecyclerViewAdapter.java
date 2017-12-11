@@ -1,8 +1,9 @@
-package com.example.seokchankwon.verticalsectionrecyclerview;
+package com.example.seokchankwon.verticalsectionrecyclerview.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * Created by seokchan.kwon on 2017. 9. 18..
  */
 
-public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class SectionRecyclerViewAdapter<T> extends BaseRecyclerViewAdapter<T> {
 
     public static final int SECTION_HEADER_VIEW_TYPE = 0;
     public static final int SECTION_ITEM_VIEW_TYPE = 1;
@@ -20,19 +21,16 @@ public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter
 
     public int mTotalItemCount = NO_ITEM_COUNT;
 
-    private Context mContext;
-
-    private ArrayList<T> mSections;
     private ArrayList<Integer> mSectionIndicator;
     private ArrayList<Integer> mSectionHeaderPositions;
 
-    private LayoutInflater mLayoutInflater;
-
 
     public SectionRecyclerViewAdapter(Context context) {
-        mContext = context;
-        mSections = new ArrayList<>();
-        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this(context, null);
+    }
+
+    public SectionRecyclerViewAdapter(Context context, ArrayList<T> list) {
+        super(context, list);
     }
 
     @Override
@@ -84,31 +82,52 @@ public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter
         }
     }
 
-    public Context getContext() {
-        return mContext;
-    }
-
-    public LayoutInflater getLayoutInflater() {
-        return mLayoutInflater;
-    }
-
-    public void setItems(ArrayList<T> items) {
-        mSections.clear();
+    @Override
+    public void setItem(@Nullable T item) {
         mTotalItemCount = NO_ITEM_COUNT;
-
-        if (items != null) {
-            mSections.addAll(items);
-        }
-
-        notifyDataSetChanged();
+        super.setItem(item);
     }
 
-    public ArrayList<T> getItems() {
-        return mSections;
+    @Override
+    public void setItems(@Nullable ArrayList<T> items) {
+        mTotalItemCount = NO_ITEM_COUNT;
+        super.setItems(items);
     }
 
-    public T getItem(int position) {
-        return mSections.get(position);
+    @Override
+    public void insertItem(@Nullable T item) {
+        mTotalItemCount = NO_ITEM_COUNT;
+        super.insertItem(item);
+    }
+
+    @Override
+    public void insertItem(int position, @Nullable T item) {
+        mTotalItemCount = NO_ITEM_COUNT;
+        super.insertItem(position, item);
+    }
+
+    @Override
+    public void insertItems(@Nullable ArrayList<T> items) {
+        mTotalItemCount = NO_ITEM_COUNT;
+        super.insertItems(items);
+    }
+
+    @Override
+    public void insertItems(int position, @Nullable ArrayList<T> items) {
+        mTotalItemCount = NO_ITEM_COUNT;
+        super.insertItems(position, items);
+    }
+
+    @Override
+    public void removeItem(@NonNull T item) {
+        mTotalItemCount = NO_ITEM_COUNT;
+        super.removeItem(item);
+    }
+
+    @Override
+    public void removeItem(int position) {
+        mTotalItemCount = NO_ITEM_COUNT;
+        super.removeItem(position);
     }
 
     private int initItemCount() {
@@ -121,7 +140,11 @@ public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter
             mSectionIndicator.clear();
         }
 
-        mSectionHeaderPositions = new ArrayList<>();
+        if (mSectionHeaderPositions == null) {
+            mSectionHeaderPositions = new ArrayList<>();
+        } else {
+            mSectionHeaderPositions.clear();
+        }
 
         for (int i = 0; i < sectionCount; i++) {
             int sectionItemCount = getSectionItemCount(i) + 1;
@@ -154,13 +177,12 @@ public abstract class SectionRecyclerViewAdapter<T> extends RecyclerView.Adapter
         int sectionItemPosition = 0;
 
         while (targetPosition != adapterPosition) {
-            if (targetPosition > mTotalItemCount) {
+            if (targetPosition >= mTotalItemCount) {
                 return NO_ITEM_COUNT;
             }
             targetPosition++;
             sectionItemPosition++;
         }
-
         return sectionItemPosition;
     }
 

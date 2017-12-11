@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
+import com.example.seokchankwon.verticalsectionrecyclerview.adapter.MainAdapter;
 import com.example.seokchankwon.verticalsectionrecyclerview.model.Item;
 import com.example.seokchankwon.verticalsectionrecyclerview.model.Section;
 
@@ -53,45 +54,32 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.setItems(makeItems());
-        mAdapter.setOnSectionHeaderClickListener(new MainAdapter.OnSectionHeaderClickListener() {
-            @Override
-            public void onHeaderClick(int sectionPosition, int adapterPosition, Section item) {
-                Toast.makeText(
-                        MainActivity.this,
-                        "adapterPosition = " + adapterPosition + "\n"
-                                + "sectionPosition = " + sectionPosition + "\n"
-                                + "title = " + item.title + "\n"
-                                + "size = " + item.items.size() + "\n",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        mAdapter.setOnSectionHeaderClickListener((sectionPosition, adapterPosition, item) -> Toast.makeText(
+                MainActivity.this,
+                "adapterPosition = " + adapterPosition + "\n"
+                        + "sectionPosition = " + sectionPosition + "\n"
+                        + "title = " + item.title + "\n"
+                        + "size = " + item.items.size() + "\n",
+                Toast.LENGTH_SHORT).show());
 
-        mAdapter.setOnSectionItemClickListener(new MainAdapter.OnSectionItemClickListener() {
-            @Override
-            public void onItemClick(int sectionPosition, int sectionItemPosition, int adapterPosition, Item item) {
-                Toast.makeText(
-                        MainActivity.this,
-                        "adapterPosition = " + adapterPosition + "\n"
-                                + "sectionPosition = " + sectionPosition + "\n"
-                                + "sectionItemPosition = " + sectionItemPosition + "\n"
-                                + "title = " + item.name + "\n"
-                                + "desc = " + item.desc + "\n",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        mAdapter.setOnSectionItemClickListener((sectionPosition, sectionItemPosition, adapterPosition, item) -> Toast.makeText(
+                MainActivity.this,
+                "adapterPosition = " + adapterPosition + "\n"
+                        + "sectionPosition = " + sectionPosition + "\n"
+                        + "sectionItemPosition = " + sectionItemPosition + "\n"
+                        + "title = " + item.name + "\n"
+                        + "desc = " + item.desc + "\n",
+                Toast.LENGTH_SHORT).show());
 
-        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mAdapter.notifySectionChanged(1);
-                mRefreshLayout.setRefreshing(false);
-            }
+        mRefreshLayout.setOnRefreshListener(() -> {
+            mAdapter.notifySectionChanged(1);
+            mRefreshLayout.setRefreshing(false);
         });
     }
 
     private void initView() {
-        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sr_activity_main);
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_activity_main);
+        mRefreshLayout = findViewById(R.id.sr_activity_main);
+        mRecyclerView = findViewById(R.id.rv_activity_main);
     }
 
     private ArrayList<Section> makeItems() {

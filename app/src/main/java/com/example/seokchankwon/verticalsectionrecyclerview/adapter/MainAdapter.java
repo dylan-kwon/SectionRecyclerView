@@ -1,4 +1,4 @@
-package com.example.seokchankwon.verticalsectionrecyclerview;
+package com.example.seokchankwon.verticalsectionrecyclerview.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.example.seokchankwon.verticalsectionrecyclerview.R;
 import com.example.seokchankwon.verticalsectionrecyclerview.model.Item;
 import com.example.seokchankwon.verticalsectionrecyclerview.model.Section;
 
@@ -26,7 +27,7 @@ public class MainAdapter extends SectionRecyclerViewAdapter<Section> {
 
     @Override
     RecyclerView.ViewHolder onCreateSectionHeaderViewHolder(ViewGroup parent, int viewType) {
-        View view = getLayoutInflater().inflate(R.layout.listview_main_section, parent, false);
+        View view = getInflater().inflate(R.layout.listview_main_section, parent, false);
         return new SectionHeaderHolder(view);
     }
 
@@ -51,7 +52,7 @@ public class MainAdapter extends SectionRecyclerViewAdapter<Section> {
 
     @Override
     RecyclerView.ViewHolder onCreateSectionItemViewHolder(ViewGroup parent, int viewType) {
-        View view = getLayoutInflater().inflate(R.layout.listview_main_section_item, parent, false);
+        View view = getInflater().inflate(R.layout.listview_main_section_item, parent, false);
         return new SectionItemHolder(view);
     }
 
